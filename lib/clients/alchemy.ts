@@ -1,11 +1,9 @@
 import { Alchemy, Network } from "alchemy-sdk";
 
 const config = {
-  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY,
+  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY_POLYGON,
   network:
-    process.env.NEXT_PUBLIC_CHAIN_ID === "1"
-      ? Network.ETH_MAINNET
-      : Network.ETH_GOERLI,
+    process.env.NEXT_PUBLIC_CHAIN_ID === "137" ? Network.MATIC_MAINNET : Network.MATIC_TESTNET,
 };
 
 export const alchemy = new Alchemy(config);
