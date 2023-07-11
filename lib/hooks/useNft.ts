@@ -34,7 +34,7 @@ export const useNft = ({
 
   const { data: customNftData, isLoading: customNftLoading } = useSWR(
     key,
-    () => getNftAsset(tokenId, apiEndpoint),
+    () => getNftAsset(tokenId, contractAddress, apiEndpoint),
     {
       refreshInterval: refreshInterval,
       shouldRetryOnError: true,
@@ -58,3 +58,4 @@ export const useNft = ({
     loading: hasCustomImplementation ? customNftLoading : nftMetadataLoading,
   };
 };
+

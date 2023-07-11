@@ -65,18 +65,17 @@ function isTokenId(value: number): value is TokenId {
 
 export async function getNftAsset(
   tokenId: number,
-  apiEndpoint?: string
+  contractAddress: string,
+  apiEndpoint?: string,
 ): Promise<string[] | string> {
   if (isTokenId(tokenId)) {
-    const response = await fetch(`${apiEndpoint || nftUrl}/${tokenId}`);
+    const response = await alchemy.nft.getNftMetadata(contractAddress, tokenId)
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (!response || !response.rawMetadata?.image) {
+      throw new Error(`HTTP error! status: Could not getNftAsset ${response}`);
     }
 
-    const data = await response.json();
-    return data;
-    // return data.image.replace("ipfs://", "https://ipfs.io/ipfs/");
+    return response.rawMetadata.image;
   } else {
     throw new Error(`TokenId must be between 0 and ${MAX_TOKEN_ID}`);
   }
