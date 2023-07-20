@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="1440"
+   height="1440"
+   viewBox="0 0 1440 1440"
+   sodipodi:docname="orb_logo_black.ai"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath16">
+      <path
+         d="M 0,1080 H 1080 V 0 H 0 Z"
+         id="path14" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
+  <g
+     id="g8"
+     inkscape:groupmode="layer"
+     inkscape:label="orb_logo_black"
+     transform="matrix(1.3333333,0,0,-1.3333333,0,1440)">
+    <g
+       id="g10">
+      <g
+         id="g12"
+         clip-path="url(#clipPath16)">
+        <g
+           id="g18"
+           transform="translate(822.2787,279.0964)">
+          <path
+             d="m 0,0 c -43.082,0 -78.006,34.815 -78.006,77.761 0,42.947 34.924,77.762 78.006,77.762 43.082,0 78.006,-34.815 78.006,-77.762 C 78.006,34.815 43.082,0 0,0 m -279.798,32.919 c -127.025,0.284 -229.76,103.489 -229.465,230.514 0.295,127.025 103.509,229.769 230.534,229.485 127.025,-0.284 229.76,-103.489 229.465,-230.514 C -49.559,135.379 -152.773,32.635 -279.798,32.919 m 0.534,700 c -259.573,0 -470,-210.426 -470,-470 0,-259.574 210.427,-470 470,-470 259.574,0 470,210.426 470,470 0,259.574 -210.426,470 -470,470"
+             style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             id="path20" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
