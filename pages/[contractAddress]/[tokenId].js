@@ -9,7 +9,7 @@ const lensClient = new LensClient({
   environment: production,
 });
 
-export default function Token({ contractAddress, tokenId, handle, nftImages, allNfts }) {
+export default function Token({ contractAddress, tokenId, account, nftImages, allNfts }) {
 
   // Convert the tokens array into a URL-friendly string
   const nftImagesParam = encodeURIComponent(JSON.stringify(nftImages));
@@ -52,8 +52,32 @@ export async function getServerSideProps({ params }) {
         }
       };
     });
+    console.log(simplifiedNfts)
 
     const nftImages = await getNftAsset(Number(tokenId), contractAddress);
+    console.log(nftImages)
+
+    // Call the API to get the profileId
+    // const res = await fetch('/api/db', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({ tokenId: tokenId }),
+    // });
+    // const dbData = await res.json();
+    // const profileId = dbData.profileId;
+
+    // // Call the API to get the profile
+    // const resProfile = await fetch('/api/getLensProfile', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({ profileId: profileId }),
+    // });
+    // const profileData = await resProfile.json();
+    // const profile = profileData.profile;
 
     return {
       props: {
@@ -61,7 +85,9 @@ export async function getServerSideProps({ params }) {
         tokenId,
         account,
         nftImages,
-        allNfts: simplifiedNfts
+        allNfts: simplifiedNfts,
+        // profileImage: profile?.picture.original.url ? profile.picture.original.url : profile.picture.uri,
+        // handle: profile?.handle,
       },
     };
   } catch (error) {
