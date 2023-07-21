@@ -4,13 +4,13 @@ import { alchemy } from "../../lib/clients/index";
 import Head from "next/head";
 import Image from "next/image";
 
-export default function Token({ contractAddress, tokenId, account, nftImages, allNfts }) {
+export default function Token({ contractAddress, tokenId, account, nftImages, allNfts, profileImage, handle }) {
 
   // Convert the tokens array into a URL-friendly string
   const nftImagesParam = encodeURIComponent(JSON.stringify(nftImages));
   const allNftsParam = encodeURIComponent(JSON.stringify(allNfts));
 
-  const imageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/${contractAddress}/${tokenId}?nftImages=${nftImagesParam}&allNfts=${allNftsParam}`;
+  const imageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/${contractAddress}/${tokenId}?nftImages=${nftImagesParam}&allNfts=${allNftsParam}&profileImage=${profileImage}&handle=${handle}`;
 
   return (
     <>
