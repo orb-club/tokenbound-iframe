@@ -3,11 +3,6 @@ import { MAX_TOKEN_ID } from "../../lib/constants/index";
 import { alchemy } from "../../lib/clients/index";
 import Head from "next/head";
 import Image from "next/image";
-import { LensClient, production } from "@lens-protocol/client";
-
-const lensClient = new LensClient({
-  environment: production,
-});
 
 export default function Token({ contractAddress, tokenId, account, nftImages, allNfts }) {
 
@@ -26,7 +21,7 @@ export default function Token({ contractAddress, tokenId, account, nftImages, al
           content={imageUrl}
         />
       </Head>
-      <Image src={imageUrl} width={600} height={700} alt="All Memberships" />
+      <Image src={imageUrl} width={700} height={700} alt="All Memberships" />
     </>
   )
 }
@@ -52,32 +47,30 @@ export async function getServerSideProps({ params }) {
         }
       };
     });
-    console.log(simplifiedNfts)
 
     const nftImages = await getNftAsset(Number(tokenId), contractAddress);
-    console.log(nftImages)
 
     // Call the API to get the profileId
-    // const res = await fetch('/api/db', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ tokenId: tokenId }),
-    // });
-    // const dbData = await res.json();
-    // const profileId = dbData.profileId;
+    const res = await fetch('/api/db', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tokenId: tokenId }),
+    });
+    const dbData = await res.json();
+    const profileId = dbData.profileId;
 
-    // // Call the API to get the profile
-    // const resProfile = await fetch('/api/getLensProfile', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ profileId: profileId }),
-    // });
-    // const profileData = await resProfile.json();
-    // const profile = profileData.profile;
+    // Call the API to get the profile
+    const resProfile = await fetch('/api/getLensProfile', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ profileId: profileId }),
+    });
+    const profileData = await resProfile.json();
+    const profile = profileData.profile;
 
     return {
       props: {
@@ -86,8 +79,8 @@ export async function getServerSideProps({ params }) {
         account,
         nftImages,
         allNfts: simplifiedNfts,
-        // profileImage: profile?.picture.original.url ? profile.picture.original.url : profile.picture.uri,
-        // handle: profile?.handle,
+        profileImage: profile?.picture.original.url ? profile.picture.original.url : profile.picture.uri,
+        handle: profile?.handle,
       },
     };
   } catch (error) {

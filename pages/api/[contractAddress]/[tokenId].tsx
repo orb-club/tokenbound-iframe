@@ -4,10 +4,11 @@ import { Key } from "react";
 import { NextRequest } from 'next/server';
 import Image from 'next/image';
 
-
 export const config = {
   runtime: 'edge',
 }
+
+const DEFAULT_IMAGE = 'https://orb-test-media.s3.us-east-1.amazonaws.com/milad-fakurian-nY14Fs8pxT8-unsplash.jpeg';
 
 export default async function handler(request: NextRequest) {
 
@@ -27,8 +28,8 @@ export default async function handler(request: NextRequest) {
   const additionalNftsCount = tempAllNfts.length > maxNftsToShow ? tempAllNfts.length - maxNftsToShow : 0;
   const nftsToShow = tempAllNfts.slice(0, maxNftsToShow);
 
-  // const profileImage = searchParams.get('profileImage')
-  // const handle = searchParams.get('handle')
+  const profileImage = searchParams.get('profileImage')
+  const handle = searchParams.get('handle')
 
   return new ImageResponse(
     (
@@ -57,10 +58,10 @@ export default async function handler(request: NextRequest) {
           style={{
             display: 'flex',
             flexWrap: 'wrap',
-            justifyContent: 'center', // centering and even spacing
+            justifyContent: 'center',
             alignItems: 'center',
             marginTop: '6em',
-            padding: '1em', // padding inside the container
+            padding: '1em',
             borderRadius: '0.5em',
             backgroundColor: 'rgba(0,0,0,0.5)', // a slightly transparent background to help the images pop up
           }}
@@ -70,7 +71,7 @@ export default async function handler(request: NextRequest) {
               key={index}
               width="100"
               height="100"
-              src={allNft.rawMetadata.image || 'https://i.ibb.co/mGtcy3j/twitter-OG.png'}
+              src={allNft.rawMetadata.image || DEFAULT_IMAGE}
               alt="nft"
               style={{
                 borderRadius: '1em',
@@ -92,27 +93,26 @@ export default async function handler(request: NextRequest) {
           left: '1em',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center', // to center the text and image
+          alignItems: 'center',
         }}
       >
         <img
-          src='https://ik.imagekit.io/lens/media-snapshot/tr:w-1000,h-1000/041f4a7d8e46e9f9fb82865c9ae42af896e60675685b02b87f04dbcce2375b52.jpg'
+          src={profileImage || DEFAULT_IMAGE}
           alt="profile"
           style={{
             width: '80px',
             height: '80px',
-            borderRadius: '50%', // to make the image circular
+            borderRadius: '50%',
             objectFit: 'cover',
           }}
         />
-        <p style={{ marginTop: '0.5em', color: 'white' }}>Nilesh</p>
+        <p style={{ marginTop: '0.5em', color: 'white' }}>{handle}</p>
       </div>
       </div>
     ),
     {
-      width: 600,
+      width: 700,
       height: 700,
     },
   );
-  
   }
