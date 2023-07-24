@@ -73,13 +73,3 @@ export async function getProfile(profileId) {
       return null;
     }
   }
-
-export default async function handler(req, res) {
-    if(req.method === 'POST') {
-        const profileId = req.body.profileId
-
-        const profile = await getProfile(profileId)
-
-        res.status(200).json({ profile });
-    }
-}

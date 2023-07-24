@@ -10,7 +10,6 @@ const PROVIDER = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_PR
 
 export async function getProfileIdFromTokenId(tokenId, MasterMembershipContractAddress) {
     // First we need to get the contract of the mastermembership contract
-    // We have the contractAddress, we also have the abi
     const contract = new ethers.Contract(
         MasterMembershipContractAddress,
         ORBSB_CONTRACT_ABI.result,
@@ -58,18 +57,5 @@ async function getProfileIdFromRegistry(contract, account) {
     } catch (error) {
         console.log("An error occurred:", error);
         return 0;
-    }
-}
-
-
-export default async function handler(req, res) {
-    if(req.method === 'POST') {
-        const tokenId = req.body.tokenId
-        const contractAddress = req.body.contractAddress
-
-        const profileIdBigNumber = await getProfileIdFromTokenId(tokenId, contractAddress)
-        const profileId = profileIdBigNumber.toHexString();
-
-        res.status(200).json({ profileId });
     }
 }

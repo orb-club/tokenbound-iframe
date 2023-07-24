@@ -42,7 +42,7 @@ export default async function handler(request: NextRequest) {
               tw="w-20 h-20 rounded-full mr-2"
               style={{ objectFit: 'contain' }}
             />
-              <h2 tw="text-white font-bold text-4xl font-mono">
+              <h2 tw="text-white text-[40px]">
                 @{handle}
               </h2>
           </div>
@@ -55,7 +55,7 @@ export default async function handler(request: NextRequest) {
         </div>
         <div tw="flex justify-center w-full">
           <div tw="flex flex-wrap justify-center items-start mt-0 py-2 px-2 rounded-md bg-zinc-800">
-            <h2 tw="font-bold text-white w-full text-center">Memberships</h2>
+            <p tw="text-[32px] text-white w-full text-center">Memberships</p>
             {nftsToShow.slice(0, 12).map((allNft: { rawMetadata: { image: string | undefined; }; }, index: Key | null | undefined) => {
               const isLast = index === nftsToShow.slice(0, 12).length - 1 && additionalNftsCount > 0;
               return (
@@ -83,7 +83,7 @@ export default async function handler(request: NextRequest) {
     ),
     {
       width: 850,
-      height: 850,
+      height: 850
     },
   );
   
