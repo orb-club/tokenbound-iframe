@@ -148,15 +148,15 @@ export default async function handler(request: NextRequest) {
                       bottom: '0',
                       left: '0',
                       right: '0',
-                      backgroundColor: 'rgba(0,0,0,0.6)', // semi-transparent black background
+                      backgroundColor: 'rgba(0,0,0,0.6)', 
                       color: 'white',
                       fontWeight: 'bold',
                       fontSize: '2.5em',
-                      zIndex: 1, // make sure the div is above the image
-                      fontFamily: '"Arial", sans-serif', // New font family
-                      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', // Text shadow for better legibility
-                      textTransform: 'uppercase', // Transform the text to uppercase
-                      letterSpacing: '2px', // Increase the spacing between letters
+                      zIndex: 1, 
+                      fontFamily: '"Arial", sans-serif', 
+                      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
+                      textTransform: 'uppercase', 
+                      letterSpacing: '2px', 
                     }}
                   >
                     +{additionalNftsCount}
