@@ -3,6 +3,7 @@ import { MAX_TOKEN_ID } from "../../lib/constants/index";
 import { alchemy } from "../../lib/clients/index";
 import Head from "next/head";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 export default function Token({ contractAddress, tokenId, account, nftImages, allNfts, profileImage, handle }) {
 
@@ -24,6 +25,36 @@ export default function Token({ contractAddress, tokenId, account, nftImages, al
       <Image src={imageUrl} width={850} height={850} alt="All Memberships" />
     </>
   )
+}
+
+
+async function getProfileId(tokenId, contractAddress){
+    // Call the API to get the profileId
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/getProfileIdFromRegistry`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tokenId, contractAddress }),
+    });
+    const getProfileIdFromRegistryData = await res.json();
+    const profileId = getProfileIdFromRegistryData.profileId;
+    return profileId;
+}
+
+async function getProfile(profileId){
+  // Call the API to get the profile
+
+  const resProfile = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/getLensProfile`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ profileId: profileId }),
+  });
+  const profileData = await resProfile.json();
+  const profile = profileData.profile;
+  return profile;
 }
 
 export async function getServerSideProps({ params }) {
@@ -50,28 +81,9 @@ export async function getServerSideProps({ params }) {
 
     const nftImages = await getNftAsset(Number(tokenId), contractAddress);
 
-    // Call the API to get the profileId
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/getProfileIdFromRegistry`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ tokenId: tokenId, contractAddress: contractAddress }),
-    });
-    const getProfileIdFromRegistryData = await res.json();
-    const profileId = getProfileIdFromRegistryData.profileId;
-
-    // Call the API to get the profile
-    const resProfile = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/getLensProfile`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ profileId: profileId }),
-    });
-    const profileData = await resProfile.json();
-    const profile = profileData.profile;
-
+    const profileId = await getProfileId(tokenId, contractAddress);
+    const profile = await getProfile(profileId);
+    
     return {
       props: {
         contractAddress,
