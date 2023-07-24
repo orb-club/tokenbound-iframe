@@ -30,7 +30,7 @@ export const applyIpfsGatewayToProfilePicture = (obj) => {
     return tempprofile
   };
 
-async function getProfile(profileId) {
+export async function getProfile(profileId) {
     try {
       const response = await axios.post(LENS_ENDPOINT, {
         query: `

@@ -33,139 +33,52 @@ export default async function handler(request: NextRequest) {
 
   return new ImageResponse(
     (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          fontSize: '1.25em',
-          color: 'white',
-          backgroundColor: '#181818',
-          width: '100%',
-          height: '100%',
-          paddingTop: '2em',
-          paddingLeft: '2em',
-          paddingRight: '2em',
-          paddingBottom: '2em',
-          boxSizing: 'border-box',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%',
-            marginBottom: '1em',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
+      <div tw="flex flex-col justify-start items-center text-lg text-white bg-zinc-800 w-full h-full py-8 px-8">
+        <div tw="flex justify-between items-center w-full mb-4">
+          <div tw="flex items-center">
             <img
               src={profileImage || DEFAULT_IMAGE}
               alt="profile"
-              style={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                marginRight: '0.5em',
-              }}
+              tw="w-20 h-20 rounded-full mr-2"
+              style={{ objectFit: 'contain' }}
             />
-              <p style={{ 
-                color: 'white', 
-                fontWeight: 800,
-                fontSize: '2em',
-                fontFamily: '"Courier New", monospace'
-              }}>
+              <h2 tw="text-white font-bold text-4xl font-mono">
                 @{handle}
-              </p>
+              </h2>
           </div>
           <img
-            src="https://i.ibb.co/8mV2jjt/orb-logo-white.png"
+            src="https://i.ibb.co/DLPxNsx/Webp-net-resizeimage.png"
             alt="logo"
-            style={{
-              width: '80px',
-              height: '80px',
-            }}
+            tw="w-20 h-20"
+            style={{ objectFit: 'contain' }}
           />
         </div>
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            marginTop: '0em',
-            padding: '0.5em',
-            borderRadius: '0.5em',
-            backgroundColor: '#181818',
-          }}
-        >
-          <h2 style={{ fontWeight: 800, color: 'white', width: '100%', textAlign: 'center' }}>Memberships</h2>
-          {nftsToShow.slice(0, 12).map((allNft: { rawMetadata: { image: string | undefined; }; }, index: Key | null | undefined) => {
-            const isLast = index === nftsToShow.slice(0, 12).length - 1 && additionalNftsCount > 0;
-            return (
-              <div
-                key={index}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'relative',
-                  borderRadius: '1em',
-                  margin: '0.25em',
-                  flexBasis: '22%',
-                  flexGrow: 0,
-                  flexShrink: 0,
-                  overflow: 'hidden',
-                }}
-              >
-                <img
-                  src={allNft.rawMetadata.image || DEFAULT_IMAGE}
-                  alt="nft"
-                  style={{
-                    width: '150px',
-                    height: '150px',
-                    objectFit: 'cover',
-                    filter: isLast ? 'blur(2px)' : 'none',
-                  }}
-                />
-                {isLast && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      position: 'absolute',
-                      top: '0',
-                      bottom: '0',
-                      left: '0',
-                      right: '0',
-                      backgroundColor: 'rgba(0,0,0,0.6)', 
-                      color: 'white',
-                      fontWeight: 'bold',
-                      fontSize: '2.5em',
-                      zIndex: 1, 
-                      fontFamily: '"Arial", sans-serif', 
-                      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
-                      textTransform: 'uppercase', 
-                      letterSpacing: '2px', 
-                    }}
-                  >
-                    +{additionalNftsCount}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        <div tw="flex justify-center w-full">
+          <div tw="flex flex-wrap justify-center items-start mt-0 py-2 px-2 rounded-md bg-zinc-800">
+            <h2 tw="font-bold text-white w-full text-center">Memberships</h2>
+            {nftsToShow.slice(0, 12).map((allNft: { rawMetadata: { image: string | undefined; }; }, index: Key | null | undefined) => {
+              const isLast = index === nftsToShow.slice(0, 12).length - 1 && additionalNftsCount > 0;
+              return (
+                <div
+                  key={index}
+                  tw="flex flex-col justify-center items-center relative rounded-md m-2 flex-none w-40 h-40"
+                >
+                  <img
+                    src={allNft.rawMetadata.image || DEFAULT_IMAGE}
+                    alt="nft"
+                    tw={`rounded-md w-40 h-40 ${isLast ? 'blur' : ''}`}
+                    style={{ objectFit: 'contain' }}
+                  />
+                  {isLast && (
+                    <div tw="flex justify-center items-center absolute inset-0 bg-black bg-opacity-60 text-white font-bold text-5xl z-10 font-sans text-shadow uppercase tracking-wider">
+                      +{additionalNftsCount}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+      </div>
       </div>
     ),
     {
@@ -173,6 +86,5 @@ export default async function handler(request: NextRequest) {
       height: 850,
     },
   );
-
   
   }

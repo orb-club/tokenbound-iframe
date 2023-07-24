@@ -4,105 +4,81 @@ import { alchemy } from "../../lib/clients/index";
 import Head from "next/head";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { getProfile } from '../api/getLensProfile';
+import { getProfileIdFromTokenId } from '../api/getProfileIdFromRegistry';
 
-export default function Token({ contractAddress, tokenId, account, nftImages, allNfts, profileImage, handle }) {
+export default function Token({ contractAddress, tokenId }) {
+  const [isLoading, setIsLoading] = useState(true); // New loading state
+  const [nftImages, setNftImages] = useState([]);
+  const [allNfts, setAllNfts] = useState([]);
+  const [profileImage, setProfileImage] = useState('');
+  const [handle, setHandle] = useState('');
 
-  // Convert the tokens array into a URL-friendly string
-  const nftImagesParam = encodeURIComponent(JSON.stringify(nftImages));
-  const allNftsParam = encodeURIComponent(JSON.stringify(allNfts));
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const result = await getAccount(Number(tokenId), contractAddress);
+        const account = result.data;
 
-  const imageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/${contractAddress}/${tokenId}?nftImages=${nftImagesParam}&allNfts=${allNftsParam}&profileImage=${profileImage}&handle=${handle}`;
+        const [data, lensData] = await Promise.all([getNfts(account), getLensNfts(account)]);
+        const nfts = data ?? [];
+        const lensNfts = lensData ?? [];
+        const allNftsLocal = [...nfts, ...lensNfts];
+
+        const simplifiedNfts = allNftsLocal.map(nft => {
+          return {
+            rawMetadata: {
+              image: parseURL(nft.rawMetadata.image)
+            }
+          };
+        });
+
+        const nftImagesLocal = await getNftAsset(Number(tokenId), contractAddress);
+        
+        const profileId = await getProfileIdFromTokenId(tokenId, contractAddress);
+        const profile = await getProfile(profileId);
+
+        setNftImages(nftImagesLocal);
+        setAllNfts(simplifiedNfts);
+        setProfileImage(profile?.picture.original.url ? profile.picture.original.url : profile.picture.uri);
+        setHandle(removeLens(profile?.handle));
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      } finally {
+        setIsLoading(false); // Set loading state to false when data is finished loading
+      }
+    }
+    fetchData();
+  }, []);
+
+  const imageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/${contractAddress}/${tokenId}?nftImages=${encodeURIComponent(JSON.stringify(nftImages))}&allNfts=${encodeURIComponent(JSON.stringify(allNfts))}&profileImage=${profileImage}&handle=${handle}`;
 
   return (
     <>
       <Head>
         <title>Memberships</title>
-        <meta
-          property="og:image"
-          content={imageUrl}
-        />
       </Head>
-      <Image src={imageUrl} width={850} height={850} alt="All Memberships" />
+      {isLoading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <p style={{ fontSize: '24px', color: '#888' }}>Loading...</p>
+        </div>
+      ) : (
+        <Image src={imageUrl} width={850} height={850} alt="All Memberships" />
+      )}
     </>
-  )
-}
-
-
-async function getProfileId(tokenId, contractAddress){
-    // Call the API to get the profileId
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/getProfileIdFromRegistry`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ tokenId, contractAddress }),
-    });
-    const getProfileIdFromRegistryData = await res.json();
-    const profileId = getProfileIdFromRegistryData.profileId;
-    return profileId;
-}
-
-async function getProfile(profileId){
-  // Call the API to get the profile
-
-  const resProfile = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/getLensProfile`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ profileId: profileId }),
-  });
-  const profileData = await resProfile.json();
-  const profile = profileData.profile;
-  return profile;
+  );  
 }
 
 export async function getServerSideProps({ params }) {
   const { contractAddress, tokenId } = params;
-
-  try {
-    // Fetch nft's TBA
-    const result = await getAccount(Number(tokenId), contractAddress);
-    const account = result.data;
-
-    // Fetch nfts inside TBA
-    const [data, lensData] = await Promise.all([getNfts(account), getLensNfts(account)]);
-    const nfts = data ?? [];
-    const lensNfts = lensData ?? [];
-    const allNfts = [...nfts, ...lensNfts];
-
-    const simplifiedNfts = allNfts.map(nft => {
-      return {
-        rawMetadata: {
-          image: parseURL(nft.rawMetadata.image)
-        }
-      };
-    });
-
-    const nftImages = await getNftAsset(Number(tokenId), contractAddress);
-
-    const profileId = await getProfileId(tokenId, contractAddress);
-    const profile = await getProfile(profileId);
-    
-    return {
-      props: {
-        contractAddress,
-        tokenId,
-        account,
-        nftImages,
-        allNfts: simplifiedNfts,
-        profileImage: profile?.picture.original.url ? profile.picture.original.url : profile.picture.uri,
-        handle: profile?.handle,
-      },
-    };
-  } catch (error) {
-    return { notFound: true };
-  }
+  return {
+    props: {
+      contractAddress,
+      tokenId,
+    }
+  };
 }
 
-function isTokenId(value) {
-  return value >= 0 && value <= MAX_TOKEN_ID;
-}
 export async function getNftAsset(
   tokenId,
   contractAddress
@@ -143,4 +119,18 @@ function parseURL(url) {
     cleanUrl = cleanUrl.replace("lens.infura-ipfs.io", "gateway.ipfscdn.io");
     return cleanUrl;
   }
+}
+
+function isTokenId(value) {
+  return value >= 0 && value <= MAX_TOKEN_ID;
+}
+
+function removeLens(word) {
+  // Check if the word ends with '.lens'
+  if (word.endsWith('.lens')) {
+    // Return the word without the last 5 characters ('.lens')
+    return word.slice(0, -5);
+  }
+  // If the word does not end with '.lens', return it as it is
+  return word;
 }

@@ -2,6 +2,7 @@
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
+    "./pages/api/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
     "./app/**/*.{js,ts,jsx,tsx}",
   ],
@@ -17,6 +18,7 @@ module.exports = {
         "tb-warning-primary": "#FF8A00",
         "tb-warning-secondary": "rgba(255, 138, 0, 0.1)",
         "tb-text-gray": "#666D74",
+        customgray: '#181818',
       },
       transitionProperty: {
         width: "width",
@@ -25,3 +27,4 @@ module.exports = {
   },
   plugins: [],
 };
+

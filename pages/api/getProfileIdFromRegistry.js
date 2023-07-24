@@ -1,5 +1,4 @@
 // pages/api/getProfileIdFromRegistry.js
-const fs = require("fs");
 const ethers = require("ethers");
 
 const CONTRACT_ADDRESS = "0x02101dfB77FDE026414827Fdc604ddAF224F0921"
@@ -9,7 +8,7 @@ const ORBSB_CONTRACT_ABI = require("../../abis/ORBSB_ABI.json")
 const ERC6551_ABI = require("../../abis/ERC6551_ABI.json")
 const PROVIDER = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_PROVIDER_ENDPOINT)
 
-async function getProfileIdFromTokenId(tokenId, MasterMembershipContractAddress) {
+export async function getProfileIdFromTokenId(tokenId, MasterMembershipContractAddress) {
     // First we need to get the contract of the mastermembership contract
     // We have the contractAddress, we also have the abi
     const contract = new ethers.Contract(
@@ -29,7 +28,8 @@ async function getProfileIdFromTokenId(tokenId, MasterMembershipContractAddress)
     );
 
     // Here we need to check for events of type 'AccountCreated' and filter them for the owner address
-    const profileId = await getProfileIdFromRegistry(registryContract, owner)
+    const profileIdBigNumber = await getProfileIdFromRegistry(registryContract, owner)
+    const profileId = profileIdBigNumber.toHexString();
     return profileId
 }
 
