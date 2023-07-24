@@ -22,7 +22,7 @@ export default async function handler(request: NextRequest) {
   const allNftsString = searchParams.get('allNfts');
   const allNfts = JSON.parse(decodeURIComponent(allNftsString!));
 
-  const tempAllNfts = [...allNfts, ...allNfts, ...allNfts, ...allNfts]
+  const tempAllNfts = [...allNfts]
  
   const maxNftsToShow = 12;
   const additionalNftsCount = tempAllNfts.length > maxNftsToShow ? tempAllNfts.length - maxNftsToShow : 0;
