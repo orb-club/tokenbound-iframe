@@ -7,7 +7,7 @@ const IMPLEMENTATION = "0x2D25602551487C3f3354dD80D76D54383A243358"
 const TOKEN_CONTRACT = '0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d'
 const ORBSB_CONTRACT_ABI = require("../../abis/ORBSB_ABI.json")
 const ERC6551_ABI = require("../../abis/ERC6551_ABI.json")
-const PROVIDER = new ethers.providers.JsonRpcProvider(process.env.RPC_URL)
+const PROVIDER = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_PROVIDER_ENDPOINT)
 
 async function getProfileIdFromTokenId(tokenId, MasterMembershipContractAddress) {
     // First we need to get the contract of the mastermembership contract
