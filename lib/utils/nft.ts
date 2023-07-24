@@ -5,7 +5,6 @@ import { alchemy, alchemyLens } from "@/lib/clients";
 
 export async function getNfts(account: string) {
   try {
-    console.log(account)
     const response = await alchemy.nft.getNftsForOwner(account, {
       orderBy: NftOrdering.TRANSFERTIME,
     });
@@ -70,7 +69,6 @@ export async function getNftAsset(
   apiEndpoint?: string,
 ): Promise<string[] | string> {
   if (isTokenId(tokenId)) {
-    console.log(tokenId)
     const response = await alchemy.nft.getNftMetadata(contractAddress, tokenId)
 
     if (!response || !response.rawMetadata?.image) {
@@ -78,7 +76,6 @@ export async function getNftAsset(
     }
 
     const result = parseURL(response.rawMetadata.image)
-    console.log(result)
     return result;
   } else {
     throw new Error(`TokenId must be between 0 and ${MAX_TOKEN_ID}`);

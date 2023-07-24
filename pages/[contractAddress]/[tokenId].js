@@ -21,7 +21,7 @@ export default function Token({ contractAddress, tokenId, account, nftImages, al
           content={imageUrl}
         />
       </Head>
-      <Image src={imageUrl} width={700} height={700} alt="All Memberships" />
+      <Image src={imageUrl} width={850} height={850} alt="All Memberships" />
     </>
   )
 }
@@ -51,18 +51,18 @@ export async function getServerSideProps({ params }) {
     const nftImages = await getNftAsset(Number(tokenId), contractAddress);
 
     // Call the API to get the profileId
-    const res = await fetch('/api/db', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/getProfileIdFromRegistry`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ tokenId: tokenId }),
+      body: JSON.stringify({ tokenId: tokenId, contractAddress: contractAddress }),
     });
-    const dbData = await res.json();
-    const profileId = dbData.profileId;
+    const getProfileIdFromRegistryData = await res.json();
+    const profileId = getProfileIdFromRegistryData.profileId;
 
     // Call the API to get the profile
-    const resProfile = await fetch('/api/getLensProfile', {
+    const resProfile = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/getLensProfile`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -22,9 +22,9 @@ export default async function handler(request: NextRequest) {
   const allNftsString = searchParams.get('allNfts');
   const allNfts = JSON.parse(decodeURIComponent(allNftsString!));
 
-  const tempAllNfts = [...allNfts]
+  const tempAllNfts = [...allNfts, ...allNfts, ...allNfts, ...allNfts]
  
-  const maxNftsToShow = 16;
+  const maxNftsToShow = 12;
   const additionalNftsCount = tempAllNfts.length > maxNftsToShow ? tempAllNfts.length - maxNftsToShow : 0;
   const nftsToShow = tempAllNfts.slice(0, maxNftsToShow);
 
@@ -37,14 +37,11 @@ export default async function handler(request: NextRequest) {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
           alignItems: 'center',
-          fontSize: '1.25em', // using em makes the font size relative to the parent
+          fontSize: '1.25em',
           color: 'white',
-          backgroundImage: `url(${nftImage})`,
-          backgroundSize: '100% 100%',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
+          backgroundColor: '#181818',
           width: '100%',
           height: '100%',
           paddingTop: '2em',
@@ -57,62 +54,125 @@ export default async function handler(request: NextRequest) {
         <div
           style={{
             display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            marginTop: '6em',
-            padding: '1em',
-            borderRadius: '0.5em',
-            backgroundColor: 'rgba(0,0,0,0.5)', // a slightly transparent background to help the images pop up
+            width: '100%',
+            marginBottom: '1em',
           }}
         >
-          {nftsToShow.map((allNft: { rawMetadata: { image: string | undefined; }; }, index: Key | null | undefined) => (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <img
-              key={index}
-              width="100"
-              height="100"
-              src={allNft.rawMetadata.image || DEFAULT_IMAGE}
-              alt="nft"
+              src={profileImage || DEFAULT_IMAGE}
+              alt="profile"
               style={{
-                borderRadius: '1em',
-                margin: '0.5em', // spacing between images
-                boxShadow: '0 0 10px rgba(0,0,0,0.5)', // shadow for a 3D effect
+                width: '80px',
+                height: '80px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                marginRight: '0.5em',
               }}
             />
-          ))}
-          {additionalNftsCount > 0 && 
-            <p style={{ marginTop: '1em', color: 'white' }}>
-              {`And ${additionalNftsCount} more...`}
-            </p>
-          }
+              <p style={{ 
+                color: 'white', 
+                fontWeight: 800,
+                fontSize: '2em',
+                fontFamily: '"Courier New", monospace'
+              }}>
+                @{handle}
+              </p>
+          </div>
+          <img
+            src="https://i.ibb.co/8mV2jjt/orb-logo-white.png"
+            alt="logo"
+            style={{
+              width: '80px',
+              height: '80px',
+            }}
+          />
         </div>
         <div
-        style={{
-          position: 'absolute',
-          bottom: '0em',
-          left: '1em',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <img
-          src={profileImage || DEFAULT_IMAGE}
-          alt="profile"
           style={{
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
-            objectFit: 'cover',
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            marginTop: '0em',
+            padding: '0.5em',
+            borderRadius: '0.5em',
+            backgroundColor: '#181818',
           }}
-        />
-        <p style={{ marginTop: '0.5em', color: 'white' }}>{handle}</p>
-      </div>
+        >
+          <h2 style={{ fontWeight: 800, color: 'white', width: '100%', textAlign: 'center' }}>Memberships</h2>
+          {nftsToShow.slice(0, 12).map((allNft: { rawMetadata: { image: string | undefined; }; }, index: Key | null | undefined) => {
+            const isLast = index === nftsToShow.slice(0, 12).length - 1 && additionalNftsCount > 0;
+            return (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'relative',
+                  borderRadius: '1em',
+                  margin: '0.25em',
+                  flexBasis: '22%',
+                  flexGrow: 0,
+                  flexShrink: 0,
+                  overflow: 'hidden',
+                }}
+              >
+                <img
+                  src={allNft.rawMetadata.image || DEFAULT_IMAGE}
+                  alt="nft"
+                  style={{
+                    width: '150px',
+                    height: '150px',
+                    objectFit: 'cover',
+                    filter: isLast ? 'blur(2px)' : 'none',
+                  }}
+                />
+                {isLast && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      position: 'absolute',
+                      top: '0',
+                      bottom: '0',
+                      left: '0',
+                      right: '0',
+                      backgroundColor: 'rgba(0,0,0,0.6)', // semi-transparent black background
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: '2.5em',
+                      zIndex: 1, // make sure the div is above the image
+                      fontFamily: '"Arial", sans-serif', // New font family
+                      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', // Text shadow for better legibility
+                      textTransform: 'uppercase', // Transform the text to uppercase
+                      letterSpacing: '2px', // Increase the spacing between letters
+                    }}
+                  >
+                    +{additionalNftsCount}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     ),
     {
-      width: 700,
-      height: 700,
+      width: 850,
+      height: 850,
     },
   );
+
+  
   }

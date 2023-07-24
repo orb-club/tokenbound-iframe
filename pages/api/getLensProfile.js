@@ -1,11 +1,9 @@
-// pages/api/getLensProfile.ts
-import { NextApiRequest, NextApiResponse } from "next";
+// pages/api/getLensProfile.js
 import axios from "axios";
-import { Profile, ProfileId } from "@lens-protocol/react-web";
 
 const LENS_ENDPOINT = "https://api.lens.dev/";
 
-export function parseURL(url: string) {
+export function parseURL(url) {
     if (url.includes("ipfs://")) {
       const l = url.split("ipfs://");
       return `https://gateway.ipfscdn.io/ipfs/${l[l.length - 1]}`;
@@ -18,7 +16,7 @@ export function parseURL(url: string) {
     }
   }
 
-export const applyIpfsGatewayToProfilePicture = (obj: Profile) => {
+export const applyIpfsGatewayToProfilePicture = (obj) => {
     let tempprofile = { ...obj };
     let picture = tempprofile.picture;
     if(picture && picture?.__typename == 'MediaSet' && picture.original && picture.original.url)
@@ -32,7 +30,7 @@ export const applyIpfsGatewayToProfilePicture = (obj: Profile) => {
     return tempprofile
   };
 
-async function getProfile(profileId: ProfileId) {
+async function getProfile(profileId) {
     try {
       const response = await axios.post(LENS_ENDPOINT, {
         query: `
@@ -76,13 +74,11 @@ async function getProfile(profileId: ProfileId) {
     }
   }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req, res) {
     if(req.method === 'POST') {
         const profileId = req.body.profileId
-        console.log("profileId received is ",profileId)
 
         const profile = await getProfile(profileId)
-        console.log(profile)
 
         res.status(200).json({ profile });
     }
