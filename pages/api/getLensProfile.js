@@ -1,5 +1,5 @@
 // pages/api/getLensProfile.js
-import axios from "axios";
+import { httpClient } from "../../lib/clients/http";
 
 const LENS_ENDPOINT = "https://api.lens.dev/";
 
@@ -32,7 +32,7 @@ export const applyIpfsGatewayToProfilePicture = (obj) => {
 
 export async function getProfile(profileId) {
     try {
-      const response = await axios.post(LENS_ENDPOINT, {
+      const response = await httpClient.post(LENS_ENDPOINT, {
         query: `
         query Profile($profileId: ProfileId!) {
             profile(request: { profileId: $profileId }) {
