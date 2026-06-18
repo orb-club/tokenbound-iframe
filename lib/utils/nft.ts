@@ -1,4 +1,3 @@
-import { NftOrdering } from "alchemy-sdk";
 import * as Sentry from "@sentry/nextjs";
 import { MAX_TOKEN_ID, nftUrl } from "@/lib/constants";
 import { alchemy, alchemyLens } from "@/lib/clients";
@@ -6,7 +5,7 @@ import { alchemy, alchemyLens } from "@/lib/clients";
 export async function getNfts(account: string) {
   try {
     const response = await alchemy.nft.getNftsForOwner(account, {
-      orderBy: NftOrdering.TRANSFERTIME,
+      orderBy: "transferTime",
     });
 
     if (!response.ownedNfts) {
@@ -31,7 +30,7 @@ export async function getNfts(account: string) {
 export async function getLensNfts(account: string) {
   try {
     const response = await alchemyLens.nft.getNftsForOwner(account, {
-      orderBy: NftOrdering.TRANSFERTIME,
+      orderBy: "transferTime",
     });
 
     if (!response.ownedNfts) {

@@ -1,4 +1,4 @@
-import { Nft, OwnedNft } from "alchemy-sdk";
+import { Nft, OwnedNft } from "@/lib/types";
 
 export function getAlchemyImageSrc(token?: Nft | OwnedNft) {
   // mint count for selected tokens
