@@ -1,71 +1,96 @@
-## Getting Started
+# Tokenbound iframe
 
-1. Fork the repo
-2. Fill in environment variables in `.env.local` file
-3. Sign up for the Alchemy and n.xyz accounts and fill in the relevant variables in your `.env.local` file.
+This repository is Orb's fork of [tokenbound/iframe](https://github.com/tokenbound/iframe).
 
-Install
+The app is a Next.js pages-router page.
+The package name is `iframe`.
+The route is one NFT: `/{contractAddress}/{tokenId}`.
+The page file is `pages/[contractAddress]/[tokenId].js`.
+This tree has no `app/` directory.
+The page resolves that NFT's tokenbound account.
+The response image shows a Lens profile and NFTs from that account.
+
+Contract reads use viem.
+The declared viem range is `^1.0.7`.
+NFT reads use native `fetch` against the Alchemy HTTP API.
+`lib/clients/alchemy.ts` calls Polygon mainnet NFT v3 and JSON-RPC v2.
+The dependency list has no `alchemy-sdk` package.
+The dependency list has no `ethers` package.
+
+## Setup
+
+Copy `.env.example` to `.env.local`.
+
+```bash
+cp .env.example .env.local
+```
+
+This repo contains `package-lock.json` and `pnpm-lock.yaml`.
 
 ```bash
 npm install
+```
 
-yarn
-
+```bash
 pnpm install
 ```
 
-Run the development server:
+`.env.example` defines these variables.
+
+`NEXT_PUBLIC_ALCHEMY_KEY_POLYGON` is the Alchemy API key.
+`lib/clients/alchemy.ts` sends that key to Polygon mainnet.
+`NEXT_PUBLIC_PROVIDER_ENDPOINT` is the HTTP RPC URL for `rpcClient`.
+`NEXT_PUBLIC_CHAIN_ID` is the chain id argument for the tokenbound `account` call.
+The example value is `137`.
+`NEXT_PUBLIC_TOKENBOUND_ADDRESS` is the tokenbound registry address.
+`NEXT_PUBLIC_IMPLEMENTATION_ADDRESS` is the account implementation address.
+`NEXT_PUBLIC_SALT` is the salt for the account address.
+The example value is `0`.
+`NEXT_PUBLIC_MAX_TOKEN_ID` is the upper bound for `getNftAsset`.
+The example value is `15000`.
+`NEXT_PUBLIC_BASE_URL` is the origin for the generated image.
+The example value is the placeholder `forImageApi`.
+
+`lib/clients/viem.ts` builds `rpcClient` on the Goerli chain.
+Goerli is a retired testnet.
+`rpcClient` stays on Goerli when `NEXT_PUBLIC_CHAIN_ID` is `137`.
+The page reads the tokenbound account with `rpcClient`.
+`publicClient` uses mainnet only when `NEXT_PUBLIC_CHAIN_ID` is `1`.
+Any other chain id selects Goerli for `publicClient`.
+The page does not call `publicClient`.
+
+`next.config.js` allows `next/image` from `localhost` only.
+
+## Run
+
+Start the dev server.
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
+`package.json` also defines `build`, `start`, and `lint`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000/{contractAddress}/{tokenId}`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Page data
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+The page derives the tokenbound account with `getAccount`.
+It loads NFTs owned by that account through Alchemy.
+It keeps Lens NFTs from contract `0xdb46d1dc155634fbc732f92e853b10b288ad5a1d`.
+It loads the token image with Alchemy `getNFTMetadata`.
+The image route does not draw that token image.
+It rejects token ids above `NEXT_PUBLIC_MAX_TOKEN_ID`.
+It reads the token owner through `rpcClient`.
+`pages/api/getProfileIdFromRegistry.js` scans registry logs for a Lens profile id.
+That file uses fixed addresses.
+Its registry address matches `NEXT_PUBLIC_TOKENBOUND_ADDRESS` in `.env.example`.
+Its Lens token contract is `0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d`.
+The page loads that profile from `https://api.lens.dev/`.
+It requests `{NEXT_PUBLIC_BASE_URL}/api/{contractAddress}/{tokenId}`.
+`pages/api/[contractAddress]/[tokenId].tsx` draws the profile and up to 12 account NFTs.
 
-## Environment Variables
-
-You will need to fill in the env variables in your `.env.local` file for local development with the `env.example` file. Tokenbound related variables have been filled however you will need to get sign up for accounts for Alchemy and n.xyz.
-
-We rely on [Alchemy](https://dashboard.alchemy.com/) to help with indexing NFT information, and [n.xyz](https://app.n.xyz/) for contract approval statuses. You will need to create an account with both and fill in the relevant variables in your `.env.local` file.
-
-For `n.xyz` make sure you set the `CORS` setting to your local development address or to `*` all addresses.
-
-`PROVIDER_ENDPOINT` can be the same as your `ALCHEMY_KEY` just use the `https` link instead.
-
-## Getting your NFT artwork to show up in the iFrame.
-
-The contract address and tokenId of you NFT collection is grabbed from the URL params `/contractAddress/tokenId`.
-
-The image assets of your collection is then fetched from the `useNft` hook in `app/hooks/useNft.tsx` using the environment variable `NEXT_PUBLIC_NFT_ENDPOINT`. If you want to customize and reshape the data of from the `NEXT_PUBLIC_NFT_ENDPOINT` endpoint then make those edits inside the `getNftAssets` in `/lib/utils/nft.ts`. You can see commented out code on how you would return image from an the Azuki metadata server there for reference.
-
-The image render will in the page.tsx file will then be expecting an array of images. If you have one image that should work just fine as well.
-
-## Learn More
-
-To learn more about Tokenbound, take a look at the following resources:
-
-- [Tokenbound Documentation](https://docs.tokenbound.org/)
-- [Learn tokenbound](https://tokenbound.org/)
-- [EIP-6551](https://eips.ethereum.org/EIPS/eip-6551)
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The page does not import `lib/hooks/`.
+The page does not read `NEXT_PUBLIC_NFT_ENDPOINT`.
+`useGetApprovals` still reads `NEXT_PUBLIC_NXYZ_API_KEY` and `NEXT_PUBLIC_NXYZ_ENDPOINT`.
+Those two names are absent from `.env.example`.
